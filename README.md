@@ -1,30 +1,28 @@
 # ☀️ Solariza — Calculadora de Consumo de Energia
 
 > **Energia Limpa e Consciente ⚡**  
-> Projeto web simples e responsivo que calcula o consumo mensal de energia elétrica com base em dados de potência, tempo de uso e tarifa.  
+> Uma calculadora simples e responsiva que ajuda a estimar o consumo mensal de energia elétrica com base na potência dos aparelhos e tempo de uso.
 
 ---
 
 ## 🌍 Sobre o projeto
 
-O **Solariza** é uma calculadora de consumo de energia desenvolvida em **HTML, CSS e JavaScript**, com foco em **simplicidade, usabilidade e sustentabilidade**.  
-O usuário pode cadastrar eletrodomésticos e visualizar quanto cada um consome por mês em **kWh** e o **custo estimado em reais (R$)**.  
+O **Solariza** é uma calculadora web desenvolvida em **HTML, CSS e JavaScript**, com foco em **simplicidade, educação energética e sustentabilidade**.  
+O objetivo é permitir que qualquer pessoa estime o gasto de energia dos eletrodomésticos da sua casa e compreenda melhor o impacto no valor da conta de luz 💡.
+
+🔗 **Repositório oficial:** [github.com/MarcoMarcal/Calculadora_Energia](https://github.com/MarcoMarcal/Calculadora_Energia)
 
 ---
 
 ## 🧠 Lógica básica da calculadora
 
-A lógica é baseada nas fórmulas padrão de consumo energético:
+A lógica de cálculo é baseada nas fórmulas padrões de consumo energético:
 
-### 🔹 Cálculo do consumo
-\[
-\text{Consumo (kWh)} = \frac{\text{Potência (W)} \times \text{Tempo de uso (h/dia)} \times \text{Dias}}{1000}
-\]
+Consumo (kWh) = [ Potência (W) × Tempo de uso (h/dia) × Dias ] / 1000
 
-### 🔹 Cálculo do custo total
-\[
-\text{Custo (R\$)} = \text{Consumo (kWh)} \times \text{Tarifa (R\$ por kWh)}
-\]
+### 🔹 Cálculo do consumo mensal
+
+Custo (R$) = Consumo (kWh) × Tarifa (R$/kWh)
 
 > 💡 A tarifa padrão considerada no projeto é **R$ 0,90/kWh**, podendo ser ajustada conforme a realidade local.
 
@@ -70,8 +68,8 @@ A interface adapta automaticamente os campos e a tabela para telas menores, mant
 
 ---
 
-## 🚀 Como executar
+## 🚀 Como executar o projeto
 
-1. Baixe ou clone este repositório:
+1. Clone este repositório:
    ```bash
-   git clone https://github.com/seuusuario/solariza.git
+   git clone https://github.com/MarcoMarcal/Calculadora_Energia.git
