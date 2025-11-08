@@ -73,6 +73,62 @@
       margin-bottom: 15px;
     }
 
+    /* botão e dropdown de sugestões */
+    .open-list-btn {
+      padding: 8px 10px;
+      border: 1px solid #c6e48a;
+      background: #ffffff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #2e7d32;
+      min-height: 40px;
+      box-shadow: none;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.05s;
+    }
+
+    .open-list-btn:hover {
+      background: #f1f8e9;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .open-list-btn.open {
+      background: #fdd835;
+      color: #111;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+      transform: translateY(-1px);
+    }
+
+    .aparelhos-dropdown {
+      position: absolute;
+      background: white;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      max-height: 220px;
+      overflow: auto;
+      z-index: 50;
+      width: 260px;
+      border-radius: 6px;
+    }
+
+    .aparelhos-dropdown button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .aparelhos-dropdown button:hover {
+      background: #f1f8e9;
+    }
+
     input {
       padding: 10px;
       border: 1px solid #ccc;
@@ -102,6 +158,20 @@
 
     .delete-btn:hover {
       background-color: #c62828;
+    }
+
+    /* Força contraste das opções do dropdown (sobrescreve estilos globais de botão) */
+    .aparelhos-dropdown button {
+      color: #222;
+      background: #ffffff;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 8px 10px;
+      font-weight: 500;
+    }
+
+    .aparelhos-dropdown button:hover {
+      background: #f1f8e9;
+      color: #111;
     }
 
     /* ======== TABELA ======== */
@@ -202,13 +272,43 @@
     <h2>Calculadora de Consumo de Energia</h2>
     <p class="tarifa-info">💰 Tarifa padrão considerada: <strong>R$ 0,90 por kWh</strong></p>
 
-    <div class="inputs">
-      <input type="text" id="nome" placeholder="Nome do aparelho" />
+    <div class="inputs" style="position:relative;">
+  <input type="text" id="nome" list="aparelhos" placeholder="Nome do aparelho" oninput="preencherPadrao(); hideDropdown();" onclick="showDropdown()" />
+  <button type="button" id="open-list" class="open-list-btn" aria-expanded="false" onclick="toggleDropdown()" title="Abrir opções">Opções ▾</button>
       <input type="number" id="potencia" placeholder="Potência (W)" />
       <input type="number" id="horas" placeholder="Horas por dia" />
       <input type="number" id="dias" placeholder="Dias por mês" />
       <button onclick="adicionar()">Adicionar</button>
+
+      <!-- Container para o dropdown customizado (aparece abaixo dos inputs) -->
+      <div id="aparelhosDropdown" class="aparelhos-dropdown" style="display:none; top:48px; left:10px;"></div>
     </div>
+
+    <!-- Datalist com opções de eletrodomésticos (sugestões) -->
+    <datalist id="aparelhos">
+      <option value="Aparelho de Som (Mini System)"></option>
+      <option value="Ar Condicionado 7500 BTU"></option>
+      <option value="Ar Condicionado 12000 BTU"></option>
+      <option value="Aspirador de Pó"></option>
+      <option value="Boiler Elétrico"></option>
+      <option value="Chuveiro (Verão)"></option>
+      <option value="Chuveiro (Inverno)"></option>
+      <option value="Computador"></option>
+      <option value="Estufa"></option>
+      <option value="Ferro de passar"></option>
+      <option value="Freezer (Pequeno)"></option>
+      <option value="Fritadeira"></option>
+      <option value="Lâmpada Incandescente"></option>
+      <option value="Lâmpada Eletrônica"></option>
+      <option value="Lâmpada Fluorescente"></option>
+      <option value="Lavadora de Pratos (Pequena)"></option>
+      <option value="Lavadora de Roupa (Água Fria)"></option>
+      <option value="Lavadora de Roupa (Água Quente)"></option>
+      <option value="Lava Jato"></option>
+      <option value="Microondas (Grande)"></option>
+      <option value="Refrigerador (Pequeno)"></option>
+      <option value="Secadora de Roupa"></option>
+    </datalist>
 
     <table id="tabela">
       <thead>
@@ -238,9 +338,105 @@
     © 2025 Solariza | Energia Limpa ☀️
   </footer>
 
-  <script>
+    <script>
     let itens = [];
     const tarifa = 0.9; // tarifa padrão
+
+    // Mapeamento de aparelhos com potências (valores de sugestão)
+    const aparelhosPadrao = [
+      { nome: "Aparelho de Som (Mini System)", potencia: 150 },
+      { nome: "Ar Condicionado 7500 BTU", potencia: 950 },
+      { nome: "Ar Condicionado 12000 BTU", potencia: 1400 },
+      { nome: "Aspirador de Pó", potencia: 1000 },
+      { nome: "Boiler Elétrico", potencia: 4500 },
+      { nome: "Chuveiro (Verão)", potencia: 3200 },
+      { nome: "Chuveiro (Inverno)", potencia: 5400 },
+      { nome: "Computador", potencia: 200 },
+      { nome: "Estufa", potencia: 1200 },
+      { nome: "Ferro de passar", potencia: 1000 },
+      { nome: "Freezer (Pequeno)", potencia: 62.5 },
+      { nome: "Fritadeira", potencia: 600 },
+      { nome: "Lâmpada Incandescente", potencia: 100 },
+      { nome: "Lâmpada Eletrônica", potencia: 13 },
+      { nome: "Lâmpada Fluorescente", potencia: 32 },
+      { nome: "Lavadora de Pratos (Pequena)", potencia: 1500 },
+      { nome: "Lavadora de Roupa (Água Fria)", potencia: 600 },
+      { nome: "Lavadora de Roupa (Água Quente)", potencia: 1800 },
+      { nome: "Lava Jato", potencia: 350 },
+      { nome: "Microondas (Grande)", potencia: 1400 },
+      { nome: "Refrigerador (Pequeno)", potencia: 50 },
+      { nome: "Secadora de Roupa", potencia: 2000 }
+    ];
+
+    // Preenche a potência sugerida quando o usuário seleciona um aparelho do datalist
+    function preencherPadrao() {
+      const nomeEl = document.getElementById('nome');
+      const potEl = document.getElementById('potencia');
+      const nome = nomeEl.value.trim();
+      if (!nome) return;
+
+      const found = aparelhosPadrao.find(a => a.nome.toLowerCase() === nome.toLowerCase());
+      if (found) {
+        // Só preenche se o campo potência estiver vazio, para não sobrescrever entrada manual
+        if (!potEl.value) potEl.value = found.potencia;
+      }
+    }
+
+    // --- Custom dropdown handlers ---
+    const dropdownEl = document.getElementById('aparelhosDropdown');
+
+    function populateDropdown() {
+      dropdownEl.innerHTML = '';
+      aparelhosPadrao.forEach(a => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = a.nome + ' — ' + a.potencia + ' W';
+        btn.onclick = () => selectAparelho(a);
+        dropdownEl.appendChild(btn);
+      });
+    }
+
+    function showDropdown() {
+      populateDropdown();
+      dropdownEl.style.display = 'block';
+      const openBtn = document.getElementById('open-list');
+      if (openBtn) {
+        openBtn.classList.add('open');
+        openBtn.setAttribute('aria-expanded', 'true');
+      }
+      // position: try to align below the inputs; left is already set inline
+    }
+
+    function hideDropdown() {
+      dropdownEl.style.display = 'none';
+      const openBtn = document.getElementById('open-list');
+      if (openBtn) {
+        openBtn.classList.remove('open');
+        openBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function toggleDropdown() {
+      if (dropdownEl.style.display === 'block') hideDropdown();
+      else showDropdown();
+    }
+
+    // Seleciona um aparelho da lista customizada — sobrescreve nome e potencia
+    function selectAparelho(a) {
+      document.getElementById('nome').value = a.nome;
+      document.getElementById('potencia').value = a.potencia;
+      hideDropdown();
+    }
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      const target = e.target;
+      const nomeEl = document.getElementById('nome');
+      const openBtn = document.getElementById('open-list');
+      if (!dropdownEl.contains(target) && target !== nomeEl && target !== openBtn) {
+        hideDropdown();
+      }
+    });
 
     function adicionar() {
       const nome = document.getElementById("nome").value;
