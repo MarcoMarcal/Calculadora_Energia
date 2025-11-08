@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solariza | Energia Limpa</title>
+  <style>
+    /* ======== ESTILO GERAL ======== */
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: #e8f5e9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #43a047, #fdd835);
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-style: italic;
+      font-size: 1em;
+    }
+
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 25px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #43a047;
+      margin-top: 0;
+      text-align: center;
+      font-size: 1.4em;
+    }
+
+    .tarifa-info {
+      text-align: center;
+      color: #555;
+      font-size: 0.95em;
+      margin-bottom: 15px;
+    }
+
+    /* ======== INPUTS ======== */
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 180px;
+      font-size: 0.95em;
+    }
+
+    button {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #2e7d32;
+    }
+
+    .delete-btn {
+      background-color: #e53935;
+    }
+
+    .delete-btn:hover {
+      background-color: #c62828;
+    }
+
+    /* ======== TABELA ======== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    th {
+      background-color: #fdd835;
+      color: #333;
+    }
+
+    .total {
+      font-weight: bold;
+      background-color: #f1f8e9;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      color: #555;
+      font-size: 0.85em;
+      background-color: #f1f8e9;
+      border-top: 1px solid #dce775;
+    }
+
+    /* ======== RESPONSIVIDADE ======== */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 1.6em;
+      }
+
+      .inputs {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      input {
+        width: 90%;
+      }
+
+      table {
+        font-size: 0.85em;
+      }
+
+      th, td {
+        padding: 8px 5px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.4em;
+      }
+
+      h2 {
+        font-size: 1.2em;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      footer {
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>☀️ Solariza</h1>
+    <p>Energia Limpa</p>
+  </header>
+
+  <div class="container">
+    <h2>Calculadora de Consumo de Energia</h2>
+    <p class="tarifa-info">💰 Tarifa padrão considerada: <strong>R$ 0,90 por kWh</strong></p>
+
+    <div class="inputs">
+      <input type="text" id="nome" placeholder="Nome do aparelho" />
+      <input type="number" id="potencia" placeholder="Potência (W)" />
+      <input type="number" id="horas" placeholder="Horas por dia" />
+      <input type="number" id="dias" placeholder="Dias por mês" />
+      <button onclick="adicionar()">Adicionar</button>
+    </div>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Eletrodoméstico</th>
+          <th>Potência (W)</th>
+          <th>Horas/dia</th>
+          <th>Dias/mês</th>
+          <th>Consumo (kWh/mês)</th>
+          <th>Custo (R$/mês)</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr class="total">
+          <td colspan="4">TOTAL</td>
+          <td id="totalConsumo">0.00</td>
+          <td id="totalCusto">0.00</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <footer>
+    © 2025 Solariza | Energia Limpa ☀️
+  </footer>
+
+  <script>
+    let itens = [];
+    const tarifa = 0.9; // tarifa padrão
+
+    function adicionar() {
+      const nome = document.getElementById("nome").value;
+      const potencia = parseFloat(document.getElementById("potencia").value);
+      const horas = parseFloat(document.getElementById("horas").value);
+      const dias = parseInt(document.getElementById("dias").value);
+
+      if (!nome || !potencia || !horas || !dias) {
+        alert("Por favor, preencha todos os campos!");
+        return;
+      }
+
+      const consumo = (potencia * horas * dias) / 1000;
+      const custo = consumo * tarifa;
+      itens.push({ nome, potencia, horas, dias, consumo, custo });
+      atualizarTabela();
+
+      document.getElementById("nome").value = "";
+      document.getElementById("potencia").value = "";
+      document.getElementById("horas").value = "";
+      document.getElementById("dias").value = "";
+    }
+
+    function excluir(index) {
+      itens.splice(index, 1);
+      atualizarTabela();
+    }
+
+    function atualizarTabela() {
+      const tbody = document.querySelector("#tabela tbody");
+      tbody.innerHTML = "";
+
+      let totalConsumo = 0;
+      let totalCusto = 0;
+
+      itens.forEach((item, index) => {
+        totalConsumo += item.consumo;
+        totalCusto += item.custo;
+
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${item.nome}</td>
+          <td>${item.potencia}</td>
+          <td>${item.horas}</td>
+          <td>${item.dias}</td>
+          <td>${item.consumo.toFixed(2)}</td>
+          <td>${item.custo.toFixed(2)}</td>
+          <td><button class="delete-btn" onclick="excluir(${index})">Excluir</button></td>
+        `;
+        tbody.appendChild(linha);
+      });
+
+      document.getElementById("totalConsumo").innerText = totalConsumo.toFixed(2);
+      document.getElementById("totalCusto").innerText = totalCusto.toFixed(2);
+    }
+  </script>
+</body>
+</html>
